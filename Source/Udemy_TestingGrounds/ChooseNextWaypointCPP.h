@@ -16,10 +16,7 @@ class UDEMY_TESTINGGROUNDS_API UChooseNextWaypointCPP : public UBTTaskNode
 	
 		virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 public:
-	TArray<AActor*> Patrollpoints;
-
-private:
-	TArray<AActor*> GetWaypoints(APawn* ControlledPawn);
+	TArray<AActor*> Patrolpoints;
 	
 
 protected:
