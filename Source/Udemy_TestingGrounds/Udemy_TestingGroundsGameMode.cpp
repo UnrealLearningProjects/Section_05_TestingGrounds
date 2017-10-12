@@ -1,8 +1,8 @@
 // Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #include "Udemy_TestingGroundsGameMode.h"
-#include "Udemy_TestingGroundsHUD.h"
-#include "Udemy_TestingGroundsCharacter.h"
+#include "Player/Udemy_TestingGroundsHUD.h"
+#include "Player/FirstPersonCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AUdemy_TestingGroundsGameMode::AUdemy_TestingGroundsGameMode()
