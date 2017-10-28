@@ -56,6 +56,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint32 bUsingMotionControllers : 1;
 
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+	TSubclassOf<class AWeaponBaseCPP> GunBlueprint;
+
+private:
+	AWeaponBaseCPP* Gun;
+
 protected:
 	
 	
