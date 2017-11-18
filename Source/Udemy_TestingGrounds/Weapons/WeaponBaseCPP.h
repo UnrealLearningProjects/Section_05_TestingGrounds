@@ -14,13 +14,16 @@ class UDEMY_TESTINGGROUNDS_API AWeaponBaseCPP : public AActor
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* FP_Gun;
 	
-	/** Location on gun mesh where projectiles should spawn. */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-		class USceneComponent* FP_MuzzleLocation;
+	
 
 public:	
+
 	// Sets default values for this actor's properties
 	AWeaponBaseCPP();
+
+	/** Location on gun mesh where projectiles should spawn. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
+		class USceneComponent* FP_MuzzleLocation;
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
