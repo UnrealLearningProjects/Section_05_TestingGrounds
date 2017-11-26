@@ -44,15 +44,35 @@ void ATestingGrounds_CharacterCPP::BeginPlay()
 		return;
 	}
 	Gun = GetWorld()->SpawnActor<AWeaponBaseCPP>(GunBlueprint);
+
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
-	Gun->AttachToComponent(FP_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-	Gun->AnimInstance = GetMesh()->GetAnimInstance();
+	if (IsPlayerControlled())
+	{
+		Gun->AttachToComponent(FP_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+		
+	}
+	else
+	{
+		Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint_0"));
+		
+	}
+	Gun->AnimInstance1P = FP_Mesh->GetAnimInstance();
+	Gun->AnimInstance3P = GetMesh()->GetAnimInstance();
 
 	if (InputComponent != NULL)
 	{
 		InputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGrounds_CharacterCPP::PullTrigger);
 	}
 
+}
+
+void ATestingGrounds_CharacterCPP::UnPossessed()
+{
+	Super::UnPossessed();
+	if (Gun != NULL)
+	{
+	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint_0"));
+	}
 }
 
 // Called every frame
@@ -66,6 +86,7 @@ void ATestingGrounds_CharacterCPP::Tick(float DeltaTime)
 void ATestingGrounds_CharacterCPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 
 }
 
