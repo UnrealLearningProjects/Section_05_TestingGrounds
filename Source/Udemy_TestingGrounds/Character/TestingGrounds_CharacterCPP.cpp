@@ -46,7 +46,7 @@ void ATestingGrounds_CharacterCPP::BeginPlay()
 	Gun = GetWorld()->SpawnActor<AWeaponBaseCPP>(GunBlueprint);
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	Gun->AttachToComponent(FP_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-	Gun->AnimInstance = FP_Mesh->GetAnimInstance();
+	Gun->AnimInstance = GetMesh()->GetAnimInstance();
 
 	if (InputComponent != NULL)
 	{
