@@ -47,6 +47,12 @@ void ATestingGrounds_CharacterCPP::BeginPlay()
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	Gun->AttachToComponent(FP_Mesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	Gun->AnimInstance = FP_Mesh->GetAnimInstance();
+
+	if (InputComponent != NULL)
+	{
+		InputComponent->BindAction("Fire", IE_Pressed, this, &ATestingGrounds_CharacterCPP::PullTrigger);
+	}
+
 }
 
 // Called every frame
