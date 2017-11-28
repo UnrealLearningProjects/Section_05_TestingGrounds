@@ -34,6 +34,8 @@ void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpa
 void ATileCPP::BeginPlay()
 {
 	Super::BeginPlay();
+	SphereCast(FVector(0, 0, 0), 200);
+	SphereCast(FVector(0, 0, 1000), 200);
 }
 
 // Called every frame
@@ -46,7 +48,7 @@ void ATileCPP::Tick(float DeltaTime)
 bool ATileCPP::SphereCast(FVector Location, float Radius)
 {
 	FHitResult HitResult;
-	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Location, Location, FQuat::Identity, ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(Radius));
+	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Location, Location, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, FCollisionShape::MakeSphere(Radius));
 	if (HasHit)
 	{
 	DrawDebugSphere(GetWorld(), Location, Radius, 32, FColor(200, 0, 0, 0), true);
@@ -55,5 +57,6 @@ bool ATileCPP::SphereCast(FVector Location, float Radius)
 	{
 		DrawDebugSphere(GetWorld(), Location, Radius, 32, FColor(0, 200, 0, 0), true);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.ToString())
 	return HasHit;
 }
