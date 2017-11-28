@@ -11,11 +11,22 @@ ATileCPP::ATileCPP()
 
 }
 
-void ATileCPP::PlaceActors()
+void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn)
 {
-	auto SpawnLocation1 = FMath::RandPointInBox(FBox(FVector(0, -2000, 100), FVector(4000, 2000, 100)));
-	auto SpawnLocation2 = FMath::RandPointInBox(FBox(FVector(0, -2000, 100), FVector(4000, 2000, 100)));
-	UE_LOG(LogTemp, Warning, TEXT("%s, %s"), *SpawnLocation1.ToString(), *SpawnLocation2.ToString());
+	FVector Min = FVector(0, -2000, 0);
+	FVector Max = FVector(4000, 2000, 0);
+	FBox Bounds = FBox(Min, Max);
+	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
+	for (size_t i = 0; i < NumberToSpawn; i++)
+	{
+		FVector SpawnLocation = FMath::RandPointInBox(Bounds);
+		AActor* Spawned = GetWorld()->SpawnActor(ToSpawn);
+		Spawned->SetActorRelativeLocation(SpawnLocation);
+		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative,false));
+		
+	}
+	
+
 }
 
 // Called when the game starts or when spawned
