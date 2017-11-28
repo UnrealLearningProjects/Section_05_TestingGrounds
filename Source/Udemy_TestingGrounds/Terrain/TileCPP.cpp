@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TileCPP.h"
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -33,7 +34,6 @@ void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpa
 void ATileCPP::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -43,3 +43,17 @@ void ATileCPP::Tick(float DeltaTime)
 
 }
 
+bool ATileCPP::SphereCast(FVector Location, float Radius)
+{
+	FHitResult HitResult;
+	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Location, Location, FQuat::Identity, ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(Radius));
+	if (HasHit)
+	{
+	DrawDebugSphere(GetWorld(), Location, Radius, 32, FColor(200, 0, 0, 0), true);
+	}
+	else
+	{
+		DrawDebugSphere(GetWorld(), Location, Radius, 32, FColor(0, 200, 0, 0), true);
+	}
+	return HasHit;
+}
