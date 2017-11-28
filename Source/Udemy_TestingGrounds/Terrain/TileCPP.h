@@ -16,9 +16,12 @@ public:
 	ATileCPP();
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn);
+	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius);
+
+	bool SearchEmptyLocation(FVector& SpawnLocation, float Radius);
 
 protected:
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -27,6 +30,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	bool SphereCast(FVector Location, float Radius);
+	bool CanSpawn(FVector Location, float Radius);
 	
 };
