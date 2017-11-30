@@ -4,6 +4,8 @@
 #include "Player/Udemy_TestingGroundsHUD.h"
 #include "Player/FirstPersonCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "EngineUtils.h"
+#include "AI/Navigation/NavMeshBoundsVolume.h"
 
 AUdemy_TestingGroundsGameMode::AUdemy_TestingGroundsGameMode()
 	: Super()
@@ -14,4 +16,21 @@ AUdemy_TestingGroundsGameMode::AUdemy_TestingGroundsGameMode()
 
 	// use our custom HUD class
 	HUDClass = AUdemy_TestingGroundsHUD::StaticClass();
+}
+
+void AUdemy_TestingGroundsGameMode::PopulateBoundsVolumePool()
+{
+	TActorIterator<ANavMeshBoundsVolume> VolumeIterator = TActorIterator<ANavMeshBoundsVolume>(GetWorld());
+	while (VolumeIterator)
+	{
+		AddToPool(*VolumeIterator);
+		++VolumeIterator;
+	}
+
+
+}
+
+void AUdemy_TestingGroundsGameMode::AddToPool(ANavMeshBoundsVolume* BoundsToAdd)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Found Actor: %s"), *BoundsToAdd->GetName())
 }
