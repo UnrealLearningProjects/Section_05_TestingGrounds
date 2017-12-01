@@ -3,6 +3,8 @@
 #include "TileCPP.h"
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
+#include "Udemy_TestingGroundsGameMode.h"
+#include "ActorPoolComponent.h"
 
 
 // Sets default values
@@ -10,7 +12,6 @@ ATileCPP::ATileCPP()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
@@ -59,6 +60,8 @@ void ATileCPP::PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float
 void ATileCPP::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetPoolComponentReference();
 }
 
 // Called every frame
@@ -66,6 +69,13 @@ void ATileCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATileCPP::SetPoolComponentReference()
+{
+	auto Gamemode = (AUdemy_TestingGroundsGameMode*)GetWorld()->GetAuthGameMode();
+	ActorPoolReference = Gamemode->PoolComponent;
+	UE_LOG(LogTemp, Warning, TEXT("PoolReference: %s"), *ActorPoolReference->GetName())
 }
 
 bool ATileCPP::CanSpawn(FVector Location, float Radius)

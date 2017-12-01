@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TileCPP.generated.h"
 
+
 UCLASS()
 class UDEMY_TESTINGGROUNDS_API ATileCPP : public AActor
 {
@@ -28,8 +29,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	class AUdemy_TestingGroundsGameMode* Gamemode;
+
+	void SetPoolComponentReference();
 
 private:
 	bool CanSpawn(FVector Location, float Radius);
+	class UActorPoolComponent* ActorPoolReference;
 	
 };

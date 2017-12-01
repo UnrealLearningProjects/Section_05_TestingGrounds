@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "EngineUtils.h"
 #include "AI/Navigation/NavMeshBoundsVolume.h"
+#include "ActorPoolComponent.h"
 
 AUdemy_TestingGroundsGameMode::AUdemy_TestingGroundsGameMode()
 	: Super()
@@ -16,6 +17,8 @@ AUdemy_TestingGroundsGameMode::AUdemy_TestingGroundsGameMode()
 
 	// use our custom HUD class
 	HUDClass = AUdemy_TestingGroundsHUD::StaticClass();
+
+	PoolComponent = CreateDefaultSubobject<UActorPoolComponent>(TEXT("ActorPoolComponent"));
 }
 
 void AUdemy_TestingGroundsGameMode::PopulateBoundsVolumePool()

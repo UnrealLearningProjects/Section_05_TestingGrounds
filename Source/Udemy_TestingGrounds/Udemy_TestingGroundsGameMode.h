@@ -18,6 +18,8 @@ public:
 	void PopulateBoundsVolumePool();
 
 	void AddToPool(class ANavMeshBoundsVolume* BoundsToAdd);
+
+	class UActorPoolComponent* PoolComponent;
 };
 
 
