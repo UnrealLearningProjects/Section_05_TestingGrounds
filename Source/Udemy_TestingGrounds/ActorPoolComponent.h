@@ -22,4 +22,6 @@ public:
 
 	void Add(AActor* ActorToAdd);
 
+	AActor* PooledNavMesh;
+
 };

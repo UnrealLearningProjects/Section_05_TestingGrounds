@@ -64,6 +64,16 @@ void ATileCPP::BeginPlay()
 	SetPoolComponentReference();
 }
 
+void ATileCPP::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (ActorPoolReference == nullptr)
+	{
+		return;
+	}
+	ActorPoolReference->Return(NavMeshBoundsVolume);
+	UE_LOG(LogTemp, Warning, TEXT("Returned [%s]"), *NavMeshBoundsVolume->GetName())
+}
+
 // Called every frame
 void ATileCPP::Tick(float DeltaTime)
 {
@@ -76,6 +86,19 @@ void ATileCPP::SetPoolComponentReference()
 	auto Gamemode = (AUdemy_TestingGroundsGameMode*)GetWorld()->GetAuthGameMode();
 	ActorPoolReference = Gamemode->PoolComponent;
 	UE_LOG(LogTemp, Warning, TEXT("PoolReference: %s"), *ActorPoolReference->GetName())
+
+	PositionNavMeshBoundsVolume();
+}
+
+void ATileCPP::PositionNavMeshBoundsVolume()
+{
+	NavMeshBoundsVolume = ActorPoolReference->Checkout();
+	if (NavMeshBoundsVolume == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Not Enough Actors in Pool!"))
+			return;
+	}
+	NavMeshBoundsVolume->SetActorLocation(GetActorLocation());
 }
 
 bool ATileCPP::CanSpawn(FVector Location, float Radius)

@@ -15,16 +15,27 @@ UActorPoolComponent::UActorPoolComponent()
 
 AActor * UActorPoolComponent::Checkout()
 {
-
-	return nullptr;
+	if (PooledNavMesh == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Actor to checkout!"))
+			return nullptr;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Checkout."), *GetName())
+	return PooledNavMesh;
 }
 
 void UActorPoolComponent::Return(AActor * ActorToReturn)
 {
-
+	if (ActorToReturn == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Actor to return!"))
+		return;
+	}
+	PooledNavMesh = ActorToReturn;
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Return."), *PooledNavMesh->GetName())
 }
 
 void UActorPoolComponent::Add(AActor * ActorToAdd)
 {
-
+	PooledNavMesh = ActorToAdd;
 }

@@ -29,11 +29,9 @@ void AUdemy_TestingGroundsGameMode::PopulateBoundsVolumePool()
 		AddToPool(*VolumeIterator);
 		++VolumeIterator;
 	}
-
-
 }
 
 void AUdemy_TestingGroundsGameMode::AddToPool(ANavMeshBoundsVolume* BoundsToAdd)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Found Actor: %s"), *BoundsToAdd->GetName())
+	PoolComponent->Add(BoundsToAdd);
 }
