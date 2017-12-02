@@ -30,10 +30,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void PlaceAIPawns(TSubclassOf<APawn> ToSpawn, int MinSpawn, int MaxSpawn, float Radius);
+
 	bool SearchEmptyLocation(FVector& SpawnLocation, float Radius);
 
 protected:
 	void PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform);
+	void PlacePawn(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
