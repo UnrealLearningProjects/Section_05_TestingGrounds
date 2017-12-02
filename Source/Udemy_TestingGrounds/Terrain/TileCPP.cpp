@@ -5,13 +5,16 @@
 #include "EngineUtils.h"
 #include "Udemy_TestingGroundsGameMode.h"
 #include "ActorPoolComponent.h"
-
+#include "Engine/World.h"
+#include "AI/Navigation/NavigationSystem.h"
 
 // Sets default values
 ATileCPP::ATileCPP()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	NavigationBoundsOffset = FVector(2000, 0, 0);
 }
 
 void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
@@ -98,7 +101,8 @@ void ATileCPP::PositionNavMeshBoundsVolume()
 		UE_LOG(LogTemp, Error, TEXT("Not Enough Actors in Pool!"))
 			return;
 	}
-	NavMeshBoundsVolume->SetActorLocation(GetActorLocation());
+	NavMeshBoundsVolume->SetActorLocation(GetActorLocation() + NavigationBoundsOffset);
+	GetWorld()->GetNavigationSystem()->Build();
 }
 
 bool ATileCPP::CanSpawn(FVector Location, float Radius)
@@ -113,13 +117,5 @@ bool ATileCPP::CanSpawn(FVector Location, float Radius)
 		ECollisionChannel::ECC_GameTraceChannel2, 
 		FCollisionShape::MakeSphere(Radius)
 	);
-	if (HasHit)
-	{
-	DrawDebugCapsule(GetWorld(), GlobalLocation, 0, Radius, FQuat::Identity, FColor(200, 0, 0, 0), true);
-	}
-	else
-	{
-		DrawDebugCapsule(GetWorld(), GlobalLocation, 0, Radius, FQuat::Identity, FColor(0, 200, 0, 0), true);
-	}
 	return !HasHit;
 }
