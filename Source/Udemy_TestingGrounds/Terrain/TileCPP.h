@@ -36,8 +36,6 @@ public:
 	bool SearchEmptyLocation(FVector& SpawnLocation, float Radius);
 
 protected:
-	void PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform);
-	void PlacePawn(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -55,9 +53,16 @@ public:
 
 
 private:
+	template<class T>
+	void RandomelyPlaceActors(TSubclassOf<T> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
+
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform);
+	void PlaceActor(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform);
+
 	AActor* NavMeshBoundsVolume;
 	void PositionNavMeshBoundsVolume();
 	bool CanSpawn(FVector Location, float Radius);
 	class UActorPoolComponent* ActorPoolReference;
-	TArray<FSpawnTransform> GenerateSpawnTransforms(int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
 };
+
+

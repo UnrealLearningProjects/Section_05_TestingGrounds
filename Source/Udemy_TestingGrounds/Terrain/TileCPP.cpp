@@ -17,22 +17,31 @@ ATileCPP::ATileCPP()
 	NavigationBoundsOffset = FVector(2000, 0, 0);
 }
 
+template<class T>
+void ATileCPP::RandomelyPlaceActors(TSubclassOf<T> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
+{
+	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
+	for (size_t i = 0; i < NumberToSpawn; i++)
+	{
+		FSpawnTransform SpawnTransform;
+		SpawnTransform.Scale = FMath::RandRange(MinScale, MaxScale);
+		bool bFound = SearchEmptyLocation(SpawnTransform.Location, Radius*SpawnTransform.Scale);
+		if (bFound)
+		{
+			SpawnTransform.Rotation = FMath::RandRange(-180.f, 180.f);
+			PlaceActor(ToSpawn, SpawnTransform);
+		}
+	}
+}
+
 void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
 {
-	TArray<FSpawnTransform> SpawnTransforms = GenerateSpawnTransforms(MinSpawn, MaxSpawn, Radius, MinScale, MaxScale);
-	for (FSpawnTransform SpawnTransform : SpawnTransforms)
-	{
-		PlaceActor(ToSpawn, SpawnTransform);
-	}	
+	RandomelyPlaceActors(ToSpawn, MinSpawn, MaxSpawn, Radius, MinScale, MaxScale);
 }
 
 void ATileCPP::PlaceAIPawns(TSubclassOf<APawn> ToSpawn, int MinSpawn, int MaxSpawn, float Radius)
 {
-	TArray<FSpawnTransform> SpawnTransforms = GenerateSpawnTransforms(MinSpawn, MaxSpawn, Radius, 1, 1);
-	for (FSpawnTransform SpawnTransform : SpawnTransforms)
-	{
-		PlacePawn(ToSpawn, SpawnTransform);
-	}
+	RandomelyPlaceActors(ToSpawn, MinSpawn, MaxSpawn, Radius, 1, 1);
 }
 
 bool ATileCPP::SearchEmptyLocation(FVector& OutLocation, float Radius)
@@ -56,21 +65,27 @@ bool ATileCPP::SearchEmptyLocation(FVector& OutLocation, float Radius)
 void ATileCPP::PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform)
 {
 	AActor* Spawned = GetWorld()->SpawnActor(ToSpawn);
-	Spawned->SetActorRelativeLocation(SpawnTransform.Location);
-	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-	Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
-	Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
+	if (Spawned)
+	{
+		Spawned->SetActorRelativeLocation(SpawnTransform.Location);
+		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+		Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
+		Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
+	}
 }
 
-void ATileCPP::PlacePawn(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform)
+void ATileCPP::PlaceActor(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform)
 {
 	APawn* Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn);
-	Spawned->SetActorRelativeLocation(SpawnTransform.Location);
-	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-	Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
-	Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
-	Spawned->SpawnDefaultController();
-	Spawned->Tags.Add(FName("Enemy"));
+	if (Spawned)
+	{
+		Spawned->SetActorRelativeLocation(SpawnTransform.Location);
+		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+		Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
+		Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
+		Spawned->SpawnDefaultController();
+		Spawned->Tags.Add(FName("Enemy"));
+	}
 }
 
 // Called when the game starts or when spawned
@@ -132,25 +147,4 @@ bool ATileCPP::CanSpawn(FVector Location, float Radius)
 		FCollisionShape::MakeSphere(Radius)
 	);
 	return !HasHit;
-}
-
-TArray<FSpawnTransform> ATileCPP::GenerateSpawnTransforms(int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
-{
-	
-	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
-	TArray<FSpawnTransform> SpawnTransforms;
-
-	for (size_t i = 0; i < NumberToSpawn; i++)
-	{
-		FSpawnTransform SpawnTransform;
-		
-		SpawnTransform.Scale = FMath::RandRange(MinScale, MaxScale);
-		bool bFound = SearchEmptyLocation(SpawnTransform.Location, Radius*SpawnTransform.Scale);
-		if (bFound)
-		{
-			SpawnTransforms.Add(SpawnTransform);
-		}
-	}
-	
-	return SpawnTransforms;
 }
