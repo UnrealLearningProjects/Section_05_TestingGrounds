@@ -19,17 +19,11 @@ ATileCPP::ATileCPP()
 
 void ATileCPP::PlaceActors(TSubclassOf<AActor> ToSpawn, int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
 {
-	float RandomScale = FMath::RandRange(MinScale, MaxScale);
-	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
-	for (size_t i = 0; i < NumberToSpawn; i++)
+	TArray<FSpawnTransform> SpawnTransforms = GenerateSpawnTransforms(MinSpawn, MaxSpawn, Radius, MinScale, MaxScale);
+	for (FSpawnTransform SpawnTransform : SpawnTransforms)
 	{
-		FVector SpawnLocation;
-		bool bFound = SearchEmptyLocation(SpawnLocation, Radius*RandomScale);
-		if (bFound)
-		{
-			PlaceActor(ToSpawn, SpawnLocation, RandomScale);
-		}		
-	}
+		PlaceActor(ToSpawn, SpawnTransform);
+	}	
 }
 
 bool ATileCPP::SearchEmptyLocation(FVector& OutLocation, float Radius)
@@ -50,13 +44,13 @@ bool ATileCPP::SearchEmptyLocation(FVector& OutLocation, float Radius)
 	return false;
 }
 
-void ATileCPP::PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float RandomScale)
+void ATileCPP::PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform)
 {
 	AActor* Spawned = GetWorld()->SpawnActor(ToSpawn);
-	Spawned->SetActorRelativeLocation(SpawnPoint);
+	Spawned->SetActorRelativeLocation(SpawnTransform.Location);
 	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-	Spawned->SetActorRotation(FRotator(0, FMath::RandRange(-180, 180), 0));
-	Spawned->SetActorScale3D(FVector(RandomScale));
+	Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
+	Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
 }
 
 // Called when the game starts or when spawned
@@ -118,4 +112,25 @@ bool ATileCPP::CanSpawn(FVector Location, float Radius)
 		FCollisionShape::MakeSphere(Radius)
 	);
 	return !HasHit;
+}
+
+TArray<FSpawnTransform> ATileCPP::GenerateSpawnTransforms(int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale)
+{
+	
+	int NumberToSpawn = FMath::RandRange(MinSpawn, MaxSpawn);
+	TArray<FSpawnTransform> SpawnTransforms;
+
+	for (size_t i = 0; i < NumberToSpawn; i++)
+	{
+		FSpawnTransform SpawnTransform;
+		
+		SpawnTransform.Scale = FMath::RandRange(MinScale, MaxScale);
+		bool bFound = SearchEmptyLocation(SpawnTransform.Location, Radius*SpawnTransform.Scale);
+		if (bFound)
+		{
+			SpawnTransforms.Add(SpawnTransform);
+		}
+	}
+	
+	return SpawnTransforms;
 }

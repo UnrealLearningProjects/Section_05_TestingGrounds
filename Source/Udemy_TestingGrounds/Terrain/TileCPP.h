@@ -6,6 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "TileCPP.generated.h"
 
+USTRUCT()
+struct FSpawnTransform
+{
+	GENERATED_BODY()
+
+	FVector Location;
+	float Rotation;
+	float Scale;
+
+};
+
 
 UCLASS()
 class UDEMY_TESTINGGROUNDS_API ATileCPP : public AActor
@@ -22,7 +33,7 @@ public:
 	bool SearchEmptyLocation(FVector& SpawnLocation, float Radius);
 
 protected:
-	void PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float RandomScale);
+	void PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTransform);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -44,5 +55,5 @@ private:
 	void PositionNavMeshBoundsVolume();
 	bool CanSpawn(FVector Location, float Radius);
 	class UActorPoolComponent* ActorPoolReference;
-	
+	TArray<FSpawnTransform> GenerateSpawnTransforms(int MinSpawn, int MaxSpawn, float Radius, float MinScale, float MaxScale);
 };
