@@ -22,6 +22,7 @@ public:
 
 	void Add(AActor* ActorToAdd);
 
-	AActor* PooledNavMesh;
+private:
+	TArray<AActor*> Pool;
 
 };
