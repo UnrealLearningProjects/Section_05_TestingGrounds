@@ -76,12 +76,11 @@ void ATileCPP::PlaceActor(TSubclassOf<AActor> ToSpawn, FSpawnTransform SpawnTran
 
 void ATileCPP::PlaceActor(TSubclassOf<APawn> ToSpawn, FSpawnTransform SpawnTransform)
 {
-	APawn* Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn);
+	FRotator Rotation = FRotator(0, SpawnTransform.Rotation, 0);
+	APawn* Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn, SpawnTransform.Location, Rotation);
 	if (Spawned)
 	{
-		Spawned->SetActorRelativeLocation(SpawnTransform.Location);
 		Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-		Spawned->SetActorRotation(FRotator(0, SpawnTransform.Rotation, 0));
 		Spawned->SetActorScale3D(FVector(SpawnTransform.Scale));
 		Spawned->SpawnDefaultController();
 		Spawned->Tags.Add(FName("Enemy"));
@@ -98,12 +97,11 @@ void ATileCPP::BeginPlay()
 
 void ATileCPP::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (ActorPoolReference == nullptr)
+	if (ActorPoolReference != nullptr && NavMeshBoundsVolume != nullptr)
 	{
-		return;
+		ActorPoolReference->Return(NavMeshBoundsVolume);
+		UE_LOG(LogTemp, Warning, TEXT("Returned [%s]"), *NavMeshBoundsVolume->GetName())
 	}
-	ActorPoolReference->Return(NavMeshBoundsVolume);
-	UE_LOG(LogTemp, Warning, TEXT("Returned [%s]"), *NavMeshBoundsVolume->GetName())
 }
 
 // Called every frame
